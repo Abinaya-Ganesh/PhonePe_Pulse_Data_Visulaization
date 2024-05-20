@@ -95,10 +95,11 @@ with tab1:
     #============== / OUTPUT / ==============#
     try:
         col4,col5 = st.columns(2)
-        with col4:
+
+        # -------------------------       /     All India Transaction        /        ------------------ #
+        if tr_state == 'All':
             
-            # -------------------------       /     All India Transaction        /        ------------------ #
-            if tr_state == 'All':
+            with col4:
                 #Query part
                 query_t1_a=(f"SELECT SUM(transaction_count) AS All_PhonePe_Transactions, \
                         ROUND(SUM(transaction_amount)) AS Total_Transaction_Amount, \
@@ -121,7 +122,7 @@ with tab1:
                 st.markdown(':violet[**Transactions by Category**]')
                 query_t2_a= f"SELECT Transaction_type AS Categories, SUM(Transaction_count) AS Transactions \
                     FROM aggregated_transaction WHERE year='{tr_yr}' AND quater = '{tr_qtr}' GROUP BY Transaction_type \
-                    ORDER BY Transaction_type;"
+                          ORDER BY Transaction_type;"
                 df_t2_a = pd.read_sql(query_t2_a, engine)
                 df_t2_a.index += 1
                 if tr_type == 'Recharge & bill payments':
@@ -137,63 +138,73 @@ with tab1:
                 else:
                     st.dataframe(df_t2_a)     
 
-                #Pie-chart for every type of transaction
-                with col5:
-                    dict1 = df_t2_a.to_dict('list')
-                    list1 = list(dict1.values())
-                    if tr_type == 'Recharge & bill payments':
-                        # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0, 0, 0.1], 
-                            marker_colors=px.colors.sequential.RdBu)])
-                        fig.update_traces(textposition='inside', textinfo='percent+label',
-                            title_text='Transactions by Category',title_font={'size':20,'color':'black'})
-                        st.plotly_chart(fig,use_container_width=True)
+            #Pie-chart for every type of transaction
+            with col5:
+                dict1 = df_t2_a.to_dict('list')
+                list1 = list(dict1.values())
+                if tr_type == 'Recharge & bill payments':
+                    # pull is given as a fraction of the pie radius
+                    fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0, 0, 0.1], 
+                        marker_colors=px.colors.sequential.RdBu)])
+                    fig.update_traces(textposition='inside', textinfo='percent+label',
+                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                        # width=500, height=500)
+                    st.plotly_chart(fig,use_container_width=True)
 
-                    elif tr_type == 'Peer-to-peer payments':
-                        # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0, 0.1, 0], 
-                            marker_colors=px.colors.sequential.RdBu)])
-                        fig.update_traces(textposition='inside', textinfo='percent+label',
-                            title_text='Transactions by Category',title_font={'size':20,'color':'black'})
-                        st.plotly_chart(fig,use_container_width=True)
+                elif tr_type == 'Peer-to-peer payments':
+                    # pull is given as a fraction of the pie radius
+                    fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0, 0.1, 0], 
+                        marker_colors=px.colors.sequential.RdBu)])
+                    fig.update_traces(textposition='inside', textinfo='percent+label',
+                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                    st.plotly_chart(fig,use_container_width=True)
 
-                    elif tr_type == 'Merchant payments':
-                        # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0.1, 0, 0, 0], 
-                            marker_colors=px.colors.sequential.RdBu)])
-                        fig.update_traces(textposition='inside', textinfo='percent+label',
-                            title_text='Transactions by Category',title_font={'size':20,'color':'black'})
-                        st.plotly_chart(fig,use_container_width=True)
+                elif tr_type == 'Merchant payments':
+                    # pull is given as a fraction of the pie radius
+                    fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0.1, 0, 0, 0], 
+                        marker_colors=px.colors.sequential.RdBu)])
+                    fig.update_traces(textposition='inside', textinfo='percent+label',
+                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                    st.plotly_chart(fig,use_container_width=True)
 
-                    elif tr_type == 'Financial Services':
-                        # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0.2, 0, 0, 0, 0], 
-                            marker_colors=px.colors.sequential.RdBu)])
-                        fig.update_traces(textposition='inside', textinfo='percent+label',
-                            title_text='Transactions by Category',title_font={'size':20,'color':'black'})
-                        st.plotly_chart(fig,use_container_width=True)
+                elif tr_type == 'Financial Services':
+                    # pull is given as a fraction of the pie radius
+                    fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0.2, 0, 0, 0, 0], 
+                        marker_colors=px.colors.sequential.RdBu)])
+                    fig.update_traces(textposition='inside', textinfo='percent+label',
+                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                    st.plotly_chart(fig,use_container_width=True)
 
-                    elif tr_type == 'Others':
-                        # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0.2, 0, 0], 
-                            marker_colors=px.colors.sequential.RdBu)])
-                        fig.update_traces(textposition='inside', textinfo='percent+label',
-                            title_text='Transactions by Category',title_font={'size':20,'color':'black'})
-                        st.plotly_chart(fig,use_container_width=True)
+                elif tr_type == 'Others':
+                    # pull is given as a fraction of the pie radius
+                    fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0.2, 0, 0], 
+                        marker_colors=px.colors.sequential.RdBu)])
+                    fig.update_traces(textposition='inside', textinfo='percent+label',
+                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                    st.plotly_chart(fig,use_container_width=True)
 
-                    else:
-                        fig = px.pie(df_t2_a, values='Transactions', names='Categories', title='Transactions by Category  in {tr_yr} Quater {tr_qtr}', 
-                                    color_discrete_sequence=px.colors.sequential.RdBu, hover_data=['Transactions'], 
-                                    labels={'Categories':'Transaction Type'},width = 500, height = 500)
-                        fig.update_traces(textposition='inside', textinfo='percent+label')
-                        st.plotly_chart(fig)
+                else:
+                    fig = px.pie(df_t2_a, values='Transactions', names='Categories', title=f"Transactions by Category in {tr_yr} Quater {tr_qtr}", 
+                                color_discrete_sequence=px.colors.sequential.RdBu, hover_data=['Transactions'], 
+                                labels={'Categories':'Transaction Type'},width = 500, height = 500)
+                    fig.update_traces(textposition='inside', textinfo='percent+label')
+                    st.plotly_chart(fig)
             
+            #bar chart with toggle button
+            on_1 = st.toggle("Show plot",key='on_1')
 
+            if on_1:
+                query_t3_a=f"SELECT State, SUM(Transaction_count) AS Transaction_count FROM aggregated_transaction WHERE year='{tr_yr}' AND quater='{tr_qtr}' GROUP BY State ORDER BY State;"
+                df_u4_a = pd.read_sql(query_t3_a, engine)
+                fig = px.bar(df_u4_a , x = 'State', y ='Transaction_count', color ='Transaction_count', 
+                        color_continuous_scale = 'thermal', title = 'Transaction count Analysis Chart for INDIA', width = 900, height = 600,)
+                st.plotly_chart(fig)
+                    
+        # -------------------------       /     State wise Transaction        /        ------------------ #
+        else:
             
-            # -------------------------       /     State wise Transaction        /        ------------------ #
-            else:
-                
-                #query part
+            with col4:
+            #query part
                 query_t1_b=(f"SELECT SUM(transaction_count) AS All_PhonePe_Transactions, \
                         ROUND(SUM(transaction_amount)) AS Total_Transaction_Amount, \
                         ROUND(AVG((transaction_amount)/(transaction_count)),2) AS Avg_Transaction_Value \
@@ -214,7 +225,7 @@ with tab1:
                 st.markdown(':violet[**Transactions by Category**]')
                 query_t2_b= f"SELECT Transaction_type AS Categories, SUM(Transaction_count) AS Transactions \
                     FROM aggregated_transaction WHERE year='{tr_yr}' AND quater = '{tr_qtr}' AND State='{tr_state}' GROUP BY Transaction_type \
-                    ORDER BY Transaction_type;"
+                        ORDER BY Transaction_type;"
                 df_t2_b = pd.read_sql(query_t2_b, engine)
                 df_t2_b.index += 1
                 if tr_type == 'Recharge & bill payments':
@@ -230,59 +241,67 @@ with tab1:
                 else:
                     st.dataframe(df_t2_b)
 
-                
-                #pie-chart
-                with col5:
-                    dict2 = df_t2_b.to_dict('list')
-                    list1 = list(dict2.values())
-                    if tr_type == 'Recharge & bill payments':
-                        # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0, 0, 0.1], 
-                            marker_colors=px.colors.sequential.RdBu)])
-                        fig.update_traces(textposition='inside', textinfo='percent',
-                            title_text='Transactions by Category',title_font={'size':20,'color':'black'})
-                        st.plotly_chart(fig,use_container_width=True)
+            
+            #pie-chart
+            with col5:
+                dict2 = df_t2_b.to_dict('list')
+                list1 = list(dict2.values())
+                if tr_type == 'Recharge & bill payments':
+                    # pull is given as a fraction of the pie radius
+                    fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0, 0, 0.1], 
+                        marker_colors=px.colors.sequential.RdBu)])
+                    fig.update_traces(textposition='inside', textinfo='percent+label',
+                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                    st.plotly_chart(fig,use_container_width=True)
 
-                    elif tr_type == 'Peer-to-peer payments':
-                        # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0, 0.1, 0], 
-                            marker_colors=px.colors.sequential.RdBu)])
-                        fig.update_traces(textposition='inside', textinfo='percent+label',
-                            title_text='Transactions by Category',title_font={'size':20,'color':'black'})
-                        st.plotly_chart(fig,use_container_width=True)
+                elif tr_type == 'Peer-to-peer payments':
+                    # pull is given as a fraction of the pie radius
+                    fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0, 0.1, 0], 
+                        marker_colors=px.colors.sequential.RdBu)])
+                    fig.update_traces(textposition='inside', textinfo='percent+label',
+                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                    st.plotly_chart(fig,use_container_width=True)
 
-                    elif tr_type == 'Merchant payments':
-                        # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0.1, 0, 0, 0], 
-                            marker_colors=px.colors.sequential.RdBu)])
-                        fig.update_traces(textposition='inside', textinfo='percent+label',
-                            title_text='Transactions by Category',title_font={'size':20,'color':'black'})
-                        st.plotly_chart(fig,use_container_width=True)
+                elif tr_type == 'Merchant payments':
+                    # pull is given as a fraction of the pie radius
+                    fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0.1, 0, 0, 0], 
+                        marker_colors=px.colors.sequential.RdBu)])
+                    fig.update_traces(textposition='inside', textinfo='percent+label',
+                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                    st.plotly_chart(fig,use_container_width=True)
 
-                    elif tr_type == 'Financial Services':
-                        # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0.2, 0, 0, 0, 0], 
-                            marker_colors=px.colors.sequential.RdBu)])
-                        fig.update_traces(textposition='inside', textinfo='percent+label',
-                            title_text='Transactions by Category',title_font={'size':20,'color':'black'})
-                        st.plotly_chart(fig,use_container_width=True)
+                elif tr_type == 'Financial Services':
+                    # pull is given as a fraction of the pie radius
+                    fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0.2, 0, 0, 0, 0], 
+                        marker_colors=px.colors.sequential.RdBu)])
+                    fig.update_traces(textposition='inside', textinfo='percent+label',
+                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                    st.plotly_chart(fig,use_container_width=True)
 
-                    elif tr_type == 'Others':
-                        # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0.2, 0, 0], 
-                            marker_colors=px.colors.sequential.RdBu)])
-                        fig.update_traces(textposition='inside', textinfo='percent+label',
-                            title_text='Transactions by Category',title_font={'size':20,'color':'black'})
-                        st.plotly_chart(fig,use_container_width=True)
+                elif tr_type == 'Others':
+                    # pull is given as a fraction of the pie radius
+                    fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0.2, 0, 0], 
+                        marker_colors=px.colors.sequential.RdBu)])
+                    fig.update_traces(textposition='inside', textinfo='percent+label',
+                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                    st.plotly_chart(fig,use_container_width=True)
 
-                    else:
-                        fig = px.pie(df_t2_b, values='Transactions', names='Categories', title='Transactions by Category', 
-                                    color_discrete_sequence=px.colors.sequential.RdBu, hover_data=['Transactions'], 
-                                    labels={'Categories':'Transaction Type'},width = 500, height = 500)
-                        fig.update_traces(textposition='inside', textinfo='percent+label')
-                        st.plotly_chart(fig)    
+                else:
+                    fig = px.pie(df_t2_b, values='Transactions', names='Categories', title='Transactions by Category', 
+                                color_discrete_sequence=px.colors.sequential.RdBu, hover_data=['Transactions'], 
+                                labels={'Categories':'Transaction Type'},width = 500, height = 500)
+                    fig.update_traces(textposition='inside', textinfo='percent+label')
+                    st.plotly_chart(fig)    
+        
+            #bar chart with toggle button
+            on_2 = st.toggle("Show plot",key='on_2')
 
-
+            if on_2:
+                query_t3_b=f"SELECT District_name, SUM(Transaction_count) AS Transaction_count FROM map_transaction WHERE year='{tr_yr}' AND quater='{tr_qtr}' AND State = '{tr_state}' GROUP BY District_name ORDER BY District_name;"
+                df_u4_a = pd.read_sql(query_t3_b, engine)
+                fig = px.bar(df_u4_a , x = 'District_name', y ='Transaction_count', color ='Transaction_count', 
+                        color_continuous_scale = 'thermal', title = f"Transaction count Analysis Chart for {tr_state}", height = 600,)
+                st.plotly_chart(fig,use_container_width=True)
 
         #=========================================== /   GEO VISUALISATION   / ===================================#
 
@@ -341,7 +360,6 @@ with tab2:
 
     #============== / OUTPUT / ==============#
     
-
     col3,col4 = st.columns(2)
 
     # -------------------------       /     All India Users        /        ------------------ #
@@ -349,7 +367,7 @@ with tab2:
         with col3:
 
             #query and values
-            query_u1_a=f"SELECT SUM(User_count) AS Registered_users FROM map_user WHERE year='{u_yr}' AND quater ='{u_qtr}';"
+            query_u1_a=f"SELECT SUM(Registered_users) AS Registered_users FROM map_user WHERE year='{u_yr}' AND quater ='{u_qtr}';"
             df_u1_a = pd.read_sql(query_u1_a, engine)
             df_u1_a = df_u1_a.map(int)
             df_u1_a = df_u1_a.map(format_int_with_commas)
@@ -377,7 +395,7 @@ with tab2:
         with col4:
 
             #bar chart
-            query_u4_a=f"SELECT State, SUM(User_count) AS Registered_Users FROM map_user WHERE year='{u_yr}' AND quater='{u_qtr}' GROUP BY State ORDER BY State;"
+            query_u4_a=f"SELECT State, SUM(Registered_Users) AS Registered_Users FROM map_user WHERE year='{u_yr}' AND quater='{u_qtr}' GROUP BY State ORDER BY State;"
             df_u4_a = pd.read_sql(query_u4_a, engine)
             fig = px.bar(df_u4_a , x = 'State', y ='Registered_Users', color ='Registered_Users', 
                     color_continuous_scale = 'thermal', title = 'Top User Analysis Chart', height = 600,)
@@ -390,7 +408,7 @@ with tab2:
         with col3:
 
             #query and values
-            query_u1_b=f"SELECT SUM(User_count) AS Registered_users FROM map_user \
+            query_u1_b=f"SELECT SUM(Registered_users) AS Registered_users FROM map_user \
                 WHERE year='{u_yr}' AND quater ='{u_qtr}' AND state = '{u_state}';"
             df_u1_b = pd.read_sql(query_u1_b, engine)
             df_u1_b = df_u1_b.map(int)
@@ -420,7 +438,7 @@ with tab2:
 
             #bar chart
             query_u4_b=f"SELECT District_name, sum(Registered_users) AS Registered_users FROM map_user \
-                WHERE year='{u_yr}' AND quater ='{u_qtr}' AND state = '{u_state}' GROUP BY District_name;"
+                WHERE year='{u_yr}' AND quater ='{u_qtr}' AND state = '{u_state}' GROUP BY District_name ORDER BY District_name;"
             df_u4_b = pd.read_sql(query_u4_b, engine)
             fig = px.bar(df_u4_b, x = 'District_name', y ='Registered_users', color ='Registered_users', 
                     color_continuous_scale = 'thermal', title = 'Top User Analysis Chart')
@@ -445,3 +463,5 @@ with tab2:
     fig_tra.update_geos(fitbounds="locations", visible=False)
     fig_tra.update_layout(title_font={'size':30}, title_font_color='#6739b7', height=700)
     st.plotly_chart(fig_tra,use_container_width=True)
+    
+    
