@@ -71,7 +71,7 @@ if sql_query == '1. What is the Total Transaction count of every state from 2018
     query_1="SELECT State, Year, SUM(Transaction_count) AS Transaction_count \
           FROM aggregated_transaction GROUP BY State,year;"
     df_1 = pd.read_sql(query_1, engine)
-    fig_1 = px.bar(df_1, x='State', y='Transaction_count',  color ='Year', 
+    fig_1 = px.bar(df_1, x='State', y='Transaction_count',  color ='Year', color_continuous_scale = px.colors.sequential.Viridis, 
          title='Transaction Count of States from 2018 to 2024 Quater 1')
     st.plotly_chart(fig_1,use_container_width=True)
 
@@ -79,7 +79,7 @@ elif sql_query == '2. What is the Total Transaction amount of all the states fro
     query_2 = "SELECT State, Year, ROUND(SUM(Transaction_amount)) AS Total_Transaction_Amount \
         FROM aggregated_transaction GROUP BY State, year;"
     df_2 = pd.read_sql(query_2,engine)
-    fig_2 = px.bar(df_2, x='State', y='Total_Transaction_Amount', color='Year', 
+    fig_2 = px.bar(df_2, x='State', y='Total_Transaction_Amount', color='Year', color_continuous_scale = px.colors.sequential.Viridis, 
         title='Transaction Amounts of States from 2018 to 2024 Quater 1')
     st.plotly_chart(fig_2,use_container_width=True)
 
@@ -106,25 +106,30 @@ elif sql_query == '5. What is the Trasaction count for each Transaction type?':
         FROM aggregated_transaction GROUP BY Transaction_type"
     df_5 = pd.read_sql(query_5,engine)
     fig_5 = px.bar(df_5, x='Transaction_type', y='Transaction_count', color='Transaction_count', 
-        color_continuous_scale = 'thermal', title='Transaction Count for every Transaction type')
+        color_continuous_scale = 'thermal', title='Transaction Count for every Transaction type from 2018 to 2024 Quater 1')
     st.plotly_chart(fig_5,use_container_width=True)
    
 elif sql_query == '6. Which year has highest number of regiesterd  users?':
     query_6 = "SELECT year, SUM(Registered_users) AS Registered_users FROM map_user GROUP BY year;"
     df_6 = pd.read_sql(query_6,engine)
-    fig_6 = px.bar(df_6, x='year', y='Registered_users', color='Registered_users', 
+    fig_6 = px.bar(df_6, x='year', y='Registered_users', color='Registered_users', text='Registered_users', 
         color_continuous_scale = 'thermal', title='Total no. of Registered users every year')
+    fig_6.update_traces(textposition='outside')
     st.plotly_chart(fig_6,use_container_width=True)
 
 elif sql_query == '7. Which year marks the highest transaction count and transaction amount?':
     query_7 = "SELECT year, SUM(Transaction_count) AS Transaction_count, ROUND(SUM(Transaction_amount)) AS Total_Transaction_Amount \
         FROM aggregated_transaction GROUP BY year;"
     df_7 = pd.read_sql(query_7,engine)
-    fig_7a = px.bar(df_7,x='year',y='Total_Transaction_Amount', color='Total_Transaction_Amount', 
+    
+    fig_7a = px.bar(df_7,x='year',y='Total_Transaction_Amount', color='Total_Transaction_Amount', text='Total_Transaction_Amount',
         color_continuous_scale = 'thermal', title='Transaction amount of all states each year')
+    fig_7a.update_traces(textposition='outside')
     st.plotly_chart(fig_7a,use_container_width=True)
-    fig_7b = px.bar(df_7,x='year',y='Transaction_count', color='Transaction_count', 
+    
+    fig_7b = px.bar(df_7,x='year',y='Transaction_count', color='Transaction_count', text= 'Transaction_count',
         color_continuous_scale = 'thermal', title='Transaction count of all states each year')
+    fig_7b.update_traces(textposition='outside')
     st.plotly_chart(fig_7b,use_container_width=True)
 
 elif sql_query=='8. Which 10 states have the least number of registered users?': 
