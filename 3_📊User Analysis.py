@@ -110,7 +110,7 @@ elif sql_query == '5. What is the Trasaction count for each Transaction type?':
     st.plotly_chart(fig_5,use_container_width=True)
    
 elif sql_query == '6. Which year has highest number of regiesterd  users?':
-    query_6 = "SELECT year, SUM(User_count) AS Registered_users FROM aggregated_user GROUP BY year;"
+    query_6 = "SELECT year, SUM(Registered_users) AS Registered_users FROM map_user GROUP BY year;"
     df_6 = pd.read_sql(query_6,engine)
     fig_6 = px.bar(df_6, x='year', y='Registered_users', color='Registered_users', 
         color_continuous_scale = 'thermal', title='Total no. of Registered users every year')
