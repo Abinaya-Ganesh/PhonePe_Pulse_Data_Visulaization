@@ -341,114 +341,107 @@ with tab2:
 
     #============== / OUTPUT / ==============#
     
-    try:
-        col3,col4 = st.columns(2)
 
-        # -------------------------       /     All India Users        /        ------------------ #
-        if u_state == 'All':
-            with col3:
+    col3,col4 = st.columns(2)
 
-                #query and values
-                query_u1_a=f"SELECT SUM(User_count) AS Registered_users FROM aggregated_user WHERE year='{u_yr}' AND quater ='{u_qtr}';"
-                df_u1_a = pd.read_sql(query_u1_a, engine)
-                df_u1_a = df_u1_a.map(int)
-                df_u1_a = df_u1_a.map(format_int_with_commas)
-                value_4 = df_u1_a['Registered_users'][0]
-                label=f":violet[**Registered PhonePe users in {u_yr} Quater {u_qtr}**]"
-                st.metric(label=label, value=value_4)
+    # -------------------------       /     All India Users        /        ------------------ #
+    if u_state == 'All':
+        with col3:
 
-                query_u2_a=f"SELECT SUM(App_opens_count) AS PhonePe_App_opens FROM map_user WHERE year='{u_yr}' AND quater ='{u_qtr}';"
-                df_u2_a = pd.read_sql(query_u2_a, engine)
-                df_u2_a = df_u2_a.map(int)
-                df_u2_a = df_u2_a.map(format_int_with_commas)
-                value_5 = df_u2_a['PhonePe_App_opens'][0]
-                label=f":violet[**PhonePe App opens in {u_yr} Quater {u_qtr}**]"
-                st.metric(label=label, value=value_5)
-            
-            
-                #table
-                st.markdown(':violet[**Mobile Brand vs Registered Users**]')
-                query_u3_a=f"SELECT Mobile_brand, sum(User_count) AS Registered_users FROM aggregated_user WHERE year='{u_yr}' AND quater ='{u_qtr}' GROUP BY Mobile_brand;"
-                df_u2_a = pd.read_sql(query_u3_a, engine)
-                df_u2_a.index += 1
-                st.dataframe(df_u2_a)
+            #query and values
+            query_u1_a=f"SELECT SUM(User_count) AS Registered_users FROM map_user WHERE year='{u_yr}' AND quater ='{u_qtr}';"
+            df_u1_a = pd.read_sql(query_u1_a, engine)
+            df_u1_a = df_u1_a.map(int)
+            df_u1_a = df_u1_a.map(format_int_with_commas)
+            value_4 = df_u1_a['Registered_users'][0]
+            label=f":violet[**Registered PhonePe users in {u_yr} Quater {u_qtr}**]"
+            st.metric(label=label, value=value_4)
 
-
-            with col4:
-
-                #bar chart
-                query_u4_a=f"SELECT State, SUM(User_count) AS Registered_Users FROM aggregated_user WHERE year='{u_yr}' AND quater='{u_qtr}' GROUP BY State ORDER BY State;"
-                df_u4_a = pd.read_sql(query_u4_a, engine)
-                fig = px.bar(df_u4_a , x = 'State', y ='Registered_Users', color ='Registered_Users', 
-                        color_continuous_scale = 'thermal', title = 'Top User Analysis Chart', height = 600,)
-                st.plotly_chart(fig)
-
-
-        # -------------------------       /     State wise Users        /        ------------------ #
-        else:
-
-            with col3:
-
-                #query and values
-                query_u1_b=f"SELECT SUM(User_count) AS Registered_users FROM aggregated_user \
-                    WHERE year='{u_yr}' AND quater ='{u_qtr}' AND state = '{u_state}';"
-                df_u1_b = pd.read_sql(query_u1_b, engine)
-                df_u1_b = df_u1_b.map(int)
-                df_u1_b = df_u1_b.map(format_int_with_commas)
-                value_4 = df_u1_b['Registered_users'][0]
-                label=f":violet[**Registered PhonePe users in {u_yr} Quater {u_qtr}**]"
-                st.metric(label=label, value=value_4)
-
-                query_u2_b=f"SELECT SUM(App_opens_count) AS PhonePe_App_opens FROM map_user \
-                    WHERE year='{u_yr}' AND quater ='{u_qtr}' AND state = '{u_state}';"
-                df_u2_b = pd.read_sql(query_u2_b, engine)
-                df_u2_b = df_u2_b.map(format_int_with_commas)
-                value_5 = df_u2_b['PhonePe_App_opens'][0]
-                label=f":violet[**PhonePe App opens in {u_yr} Quater {u_qtr}**]"
-                st.metric(label=label, value=value_5)
-            
-            
-                #table
-                st.markdown(':violet[**Mobile Brand vs Registered Users**]')
-                query_u3_b=f"SELECT Mobile_brand, sum(User_count) AS Registered_users FROM aggregated_user \
-                    WHERE year='{u_yr}' AND quater ='{u_qtr}' AND state='{u_state}' GROUP BY Mobile_brand;"
-                df_u3_b = pd.read_sql(query_u3_b, engine)
-                df_u3_b.index += 1
-                st.dataframe(df_u3_b)
-
-            with col4:
-
-                #bar chart
-                query_u4_b=f"SELECT District_name, sum(Registered_users) AS Registered_users FROM map_user \
-                    WHERE year='{u_yr}' AND quater ='{u_qtr}' AND state = '{u_state}' GROUP BY District_name;"
-                df_u4_b = pd.read_sql(query_u4_b, engine)
-                fig = px.bar(df_u4_b, x = 'District_name', y ='Registered_users', color ='Registered_users', 
-                        color_continuous_scale = 'thermal', title = 'Top User Analysis Chart')
-                st.plotly_chart(fig)
-
-
-        #=========================================== /   GEO VISUALISATION   / ===================================#
-
-        query_m2=(f"SELECT SUM(Registered_users) AS Registered_users, \
-                SUM(App_opens_count) AS PhonePe_App_opens FROM map_user \
-                WHERE year='{u_yr}' AND quater ='{u_qtr}' GROUP BY state;")
+            query_u2_a=f"SELECT SUM(App_opens_count) AS PhonePe_App_opens FROM map_user WHERE year='{u_yr}' AND quater ='{u_qtr}';"
+            df_u2_a = pd.read_sql(query_u2_a, engine)
+            df_u2_a = df_u2_a.map(int)
+            df_u2_a = df_u2_a.map(format_int_with_commas)
+            value_5 = df_u2_a['PhonePe_App_opens'][0]
+            label=f":violet[**PhonePe App opens in {u_yr} Quater {u_qtr}**]"
+            st.metric(label=label, value=value_5)
         
-        df_m3 = pd.read_sql(query_m2,engine)
-        df_m4 = pd.concat([df_states,df_m3],axis=1)
         
-        # Geo plot
-        fig_tra = px.choropleth(
-            df_m4,
-            geojson="https://gist.githubusercontent.com/jbrobst/56c13bbbf9d97d187fea01ca62ea5112/raw/e388c4cae20aa53cb5090210a42ebb9b765c0a36/india_states.geojson",
-            featureidkey='properties.ST_NM',locations='State',color='Registered_users', hover_name='State', hover_data='PhonePe_App_opens', 
-            color_continuous_scale='Viridis', title = f"State wise Registerd Users Analysis for {u_yr} and Quater {u_qtr}", projection='orthographic', labels={'Registered_users':'Registered users', 'PhonePe_App_opens':'PhonePe App Opens'})
-        fig_tra.update_geos(fitbounds="locations", visible=False)
-        fig_tra.update_layout(title_font={'size':30}, title_font_color='#6739b7', height=700)
-        st.plotly_chart(fig_tra,use_container_width=True)
+            #table
+            st.markdown(':violet[**Mobile Brand vs Registered Users**]')
+            query_u3_a=f"SELECT Mobile_brand, sum(User_count) AS Registered_users FROM aggregated_user WHERE year='{u_yr}' AND quater ='{u_qtr}' GROUP BY Mobile_brand;"
+            df_u2_a = pd.read_sql(query_u3_a, engine)
+            df_u2_a.index += 1
+            st.dataframe(df_u2_a)
+
+
+        with col4:
+
+            #bar chart
+            query_u4_a=f"SELECT State, SUM(User_count) AS Registered_Users FROM map_user WHERE year='{u_yr}' AND quater='{u_qtr}' GROUP BY State ORDER BY State;"
+            df_u4_a = pd.read_sql(query_u4_a, engine)
+            fig = px.bar(df_u4_a , x = 'State', y ='Registered_Users', color ='Registered_Users', 
+                    color_continuous_scale = 'thermal', title = 'Top User Analysis Chart', height = 600,)
+            st.plotly_chart(fig)
+
+
+    # -------------------------       /     State wise Users        /        ------------------ #
+    else:
+
+        with col3:
+
+            #query and values
+            query_u1_b=f"SELECT SUM(User_count) AS Registered_users FROM map_user \
+                WHERE year='{u_yr}' AND quater ='{u_qtr}' AND state = '{u_state}';"
+            df_u1_b = pd.read_sql(query_u1_b, engine)
+            df_u1_b = df_u1_b.map(int)
+            df_u1_b = df_u1_b.map(format_int_with_commas)
+            value_4 = df_u1_b['Registered_users'][0]
+            label=f":violet[**Registered PhonePe users in {u_yr} Quater {u_qtr}**]"
+            st.metric(label=label, value=value_4)
+
+            query_u2_b=f"SELECT SUM(App_opens_count) AS PhonePe_App_opens FROM map_user \
+                WHERE year='{u_yr}' AND quater ='{u_qtr}' AND state = '{u_state}';"
+            df_u2_b = pd.read_sql(query_u2_b, engine)
+            df_u2_b = df_u2_b.map(format_int_with_commas)
+            value_5 = df_u2_b['PhonePe_App_opens'][0]
+            label=f":violet[**PhonePe App opens in {u_yr} Quater {u_qtr}**]"
+            st.metric(label=label, value=value_5)
         
-    except:
-        #if user selects a year or quater which doean't have data
-        label=f":violet[**Registered PhonePe users till {u_yr} Quater {u_qtr}**]"
-        st.metric(label=label, value='Unavailable')
-        label=f":violet[**PhonePe App opens in {u_yr} Quater {u_qtr}**]"
-        st.metric(label=label, value='Unavailable')
+        
+            #table
+            st.markdown(':violet[**Mobile Brand vs Registered Users**]')
+            query_u3_b=f"SELECT Mobile_brand, sum(User_count) AS Registered_users FROM aggregated_user \
+                WHERE year='{u_yr}' AND quater ='{u_qtr}' AND state='{u_state}' GROUP BY Mobile_brand;"
+            df_u3_b = pd.read_sql(query_u3_b, engine)
+            df_u3_b.index += 1
+            st.dataframe(df_u3_b)
+
+        with col4:
+
+            #bar chart
+            query_u4_b=f"SELECT District_name, sum(Registered_users) AS Registered_users FROM map_user \
+                WHERE year='{u_yr}' AND quater ='{u_qtr}' AND state = '{u_state}' GROUP BY District_name;"
+            df_u4_b = pd.read_sql(query_u4_b, engine)
+            fig = px.bar(df_u4_b, x = 'District_name', y ='Registered_users', color ='Registered_users', 
+                    color_continuous_scale = 'thermal', title = 'Top User Analysis Chart')
+            st.plotly_chart(fig)
+
+
+    #=========================================== /   GEO VISUALISATION   / ===================================#
+
+    query_m2=(f"SELECT SUM(Registered_users) AS Registered_users, \
+            SUM(App_opens_count) AS PhonePe_App_opens FROM map_user \
+            WHERE year='{u_yr}' AND quater ='{u_qtr}' GROUP BY state;")
+    
+    df_m3 = pd.read_sql(query_m2,engine)
+    df_m4 = pd.concat([df_states,df_m3],axis=1)
+    
+    # Geo plot
+    fig_tra = px.choropleth(
+        df_m4,
+        geojson="https://gist.githubusercontent.com/jbrobst/56c13bbbf9d97d187fea01ca62ea5112/raw/e388c4cae20aa53cb5090210a42ebb9b765c0a36/india_states.geojson",
+        featureidkey='properties.ST_NM',locations='State',color='Registered_users', hover_name='State', hover_data='PhonePe_App_opens', 
+        color_continuous_scale='Viridis', title = f"State wise Registerd Users Analysis for {u_yr} and Quater {u_qtr}", projection='orthographic', labels={'Registered_users':'Registered users', 'PhonePe_App_opens':'PhonePe App Opens'})
+    fig_tra.update_geos(fitbounds="locations", visible=False)
+    fig_tra.update_layout(title_font={'size':30}, title_font_color='#6739b7', height=700)
+    st.plotly_chart(fig_tra,use_container_width=True)
