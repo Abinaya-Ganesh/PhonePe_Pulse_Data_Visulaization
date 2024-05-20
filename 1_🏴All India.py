@@ -124,9 +124,9 @@ with tab1:
                 df_t2_a = pd.read_sql(query_t2_a, engine)
                 df_t2_a.index += 1
                 if tr_type == 'Recharge & bill payments':
-                    st.dataframe(df_t2_a.loc[[2]], hide_index=True)
-                elif tr_type == 'Peer-to-peer payments':
                     st.dataframe(df_t2_a.loc[[1]], hide_index=True)
+                elif tr_type == 'Peer-to-peer payments':
+                    st.dataframe(df_t2_a.loc[[2]], hide_index=True)
                 elif tr_type == 'Merchant payments':
                     st.dataframe(df_t2_a.loc[[3]], hide_index=True)
                 elif tr_type == 'Financial Services':
@@ -138,11 +138,11 @@ with tab1:
 
                 #Pie-chart for every type of transaction
                 with col5:
-                    dict = df_t2_a.to_dict('list')
-                    list1 = list(dict.values())
+                    dict1 = df_t2_a.to_dict('list')
+                    list1 = list(dict1.values())
                     if tr_type == 'Recharge & bill payments':
                         # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0.1, 0, 0, 0], 
+                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0.1, 0, 0, 0, 0], 
                             marker_colors=px.colors.sequential.RdBu)])
                         fig.update_traces(textposition='inside', textinfo='percent',
                             title_text='Transactions by Category',title_font={'size':20,'color':'black'})
@@ -150,7 +150,7 @@ with tab1:
 
                     elif tr_type == 'Peer-to-peer payments':
                         # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0.1, 0, 0, 0, 0], 
+                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0.1, 0, 0, 0], 
                             marker_colors=px.colors.sequential.RdBu)])
                         fig.update_traces(textposition='inside', textinfo='percent',
                             title_text='Transactions by Category',title_font={'size':20,'color':'black'})
@@ -181,7 +181,7 @@ with tab1:
                         st.plotly_chart(fig,use_container_width=True)
 
                     else:
-                        fig = px.pie(df_t2_a, values='Transactions', names='Categories', title='Transactions by Category', 
+                        fig = px.pie(df_t2_a, values='Transactions', names='Categories', title='Transactions by Category  in {tr_yr} Quater {tr_qtr}', 
                                     color_discrete_sequence=px.colors.sequential.RdBu, hover_data=['Transactions'], 
                                     labels={'Categories':'Transaction Type'},width = 500, height = 500)
                         fig.update_traces(textposition='inside', textinfo='percent+label')
@@ -216,9 +216,9 @@ with tab1:
                 df_t2_b = pd.read_sql(query_t2_b, engine)
                 df_t2_b.index += 1
                 if tr_type == 'Recharge & bill payments':
-                    st.dataframe(df_t2_b.loc[[2]],hide_index=True)
+                    st.dataframe(df_t2_b.loc[[1]],hide_index=True)
                 elif tr_type == 'Peer-to-peer payments':
-                    st.dataframe(df_t2_b.loc[[1]], hide_index=True)
+                    st.dataframe(df_t2_b.loc[[2]], hide_index=True)
                 elif tr_type == 'Merchant payments':
                     st.dataframe(df_t2_b.loc[[3]], hide_index=True)
                 elif tr_type == 'Financial Services':
@@ -231,11 +231,11 @@ with tab1:
                 
                 #pie-chart
                 with col5:
-                    dict = df_t2_b.to_dict('list')
-                    list1 = list(dict.values())
+                    dict2 = df_t2_b.to_dict('list')
+                    list1 = list(dict2.values())
                     if tr_type == 'Recharge & bill payments':
                         # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0.1, 0, 0, 0], 
+                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0.1, 0, 0, 0, 0], 
                             marker_colors=px.colors.sequential.RdBu)])
                         fig.update_traces(textposition='inside', textinfo='percent',
                             title_text='Transactions by Category',title_font={'size':20,'color':'black'})
@@ -243,7 +243,7 @@ with tab1:
 
                     elif tr_type == 'Peer-to-peer payments':
                         # pull is given as a fraction of the pie radius
-                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0.1, 0, 0, 0, 0], 
+                        fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0.1, 0, 0, 0], 
                             marker_colors=px.colors.sequential.RdBu)])
                         fig.update_traces(textposition='inside', textinfo='percent',
                             title_text='Transactions by Category',title_font={'size':20,'color':'black'})
