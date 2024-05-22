@@ -36,10 +36,8 @@ engine=create_engine(connection_url)
 
 #========================================== /   DEFINING A FUNCTION   / ================================#
 
+#Formats an integer with commas as thousand separators
 def format_int_with_commas(x):
-    """
-    Formats an integer with commas as thousand separators.
-    """
     return f"{x:,}"
 
 
@@ -197,7 +195,8 @@ with tab1:
                 query_t3_a=f"SELECT State, SUM(Transaction_count) AS Transaction_count FROM aggregated_transaction WHERE year='{tr_yr}' AND quater='{tr_qtr}' GROUP BY State ORDER BY State;"
                 df_u4_a = pd.read_sql(query_t3_a, engine)
                 fig = px.bar(df_u4_a , x = 'State', y ='Transaction_count', color ='Transaction_count', 
-                        color_continuous_scale = 'thermal', title = 'Transaction count Analysis Chart for INDIA', width = 900, height = 600,)
+                        color_continuous_scale = 'thermal', title = 'Transaction count Analysis Chart for INDIA', width = 900, height = 600, text='Transaction_count')
+                fig.update_traces(textposition='outside')
                 st.plotly_chart(fig)
                     
         # -------------------------       /     State wise Transaction        /        ------------------ #
@@ -251,7 +250,7 @@ with tab1:
                     fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0, 0, 0.1], 
                         marker_colors=px.colors.sequential.RdBu)])
                     fig.update_traces(textposition='inside', textinfo='percent+label',
-                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                        title_text=f"Transactions by Category for {tr_state}",title_font={'size':20,'color':'black'})
                     st.plotly_chart(fig,use_container_width=True)
 
                 elif tr_type == 'Peer-to-peer payments':
@@ -259,7 +258,7 @@ with tab1:
                     fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0, 0.1, 0], 
                         marker_colors=px.colors.sequential.RdBu)])
                     fig.update_traces(textposition='inside', textinfo='percent+label',
-                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                        title_text=f"Transactions by Category for {tr_state}",title_font={'size':20,'color':'black'})
                     st.plotly_chart(fig,use_container_width=True)
 
                 elif tr_type == 'Merchant payments':
@@ -267,7 +266,7 @@ with tab1:
                     fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0.1, 0, 0, 0], 
                         marker_colors=px.colors.sequential.RdBu)])
                     fig.update_traces(textposition='inside', textinfo='percent+label',
-                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                        title_text=f"Transactions by Category for {tr_state}",title_font={'size':20,'color':'black'})
                     st.plotly_chart(fig,use_container_width=True)
 
                 elif tr_type == 'Financial Services':
@@ -275,7 +274,7 @@ with tab1:
                     fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0.2, 0, 0, 0, 0], 
                         marker_colors=px.colors.sequential.RdBu)])
                     fig.update_traces(textposition='inside', textinfo='percent+label',
-                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                        title_text=f"Transactions by Category for {tr_state}",title_font={'size':20,'color':'black'})
                     st.plotly_chart(fig,use_container_width=True)
 
                 elif tr_type == 'Others':
@@ -283,11 +282,11 @@ with tab1:
                     fig = go.Figure(data=[go.Pie(labels=list1[0], values=list1[1], pull=[0, 0, 0.2, 0, 0], 
                         marker_colors=px.colors.sequential.RdBu)])
                     fig.update_traces(textposition='inside', textinfo='percent+label',
-                        title_text='Transactions by Category',title_font={'size':20,'color':'black'})
+                        title_text=f"Transactions by Category for {tr_state}",title_font={'size':20,'color':'black'})
                     st.plotly_chart(fig,use_container_width=True)
 
                 else:
-                    fig = px.pie(df_t2_b, values='Transactions', names='Categories', title='Transactions by Category', 
+                    fig = px.pie(df_t2_b, values='Transactions', names='Categories', title=f"Transactions by Category for {tr_state}", 
                                 color_discrete_sequence=px.colors.sequential.RdBu, hover_data=['Transactions'], 
                                 labels={'Categories':'Transaction Type'},width = 500, height = 500)
                     fig.update_traces(textposition='inside', textinfo='percent+label')
@@ -300,7 +299,8 @@ with tab1:
                 query_t3_b=f"SELECT District_name, SUM(Transaction_count) AS Transaction_count FROM map_transaction WHERE year='{tr_yr}' AND quater='{tr_qtr}' AND State = '{tr_state}' GROUP BY District_name ORDER BY District_name;"
                 df_u4_a = pd.read_sql(query_t3_b, engine)
                 fig = px.bar(df_u4_a , x = 'District_name', y ='Transaction_count', color ='Transaction_count', 
-                        color_continuous_scale = 'thermal', title = f"Transaction count Analysis Chart for {tr_state}", height = 600,)
+                        color_continuous_scale = 'thermal', title = f"Transaction count Analysis Chart for {tr_state}", height = 600, text='Transaction_count')
+                fig.update_traces(textposition='outside')
                 st.plotly_chart(fig,use_container_width=True)
 
         #=========================================== /   GEO VISUALISATION   / ===================================#
@@ -398,7 +398,8 @@ with tab2:
             query_u4_a=f"SELECT State, SUM(Registered_Users) AS Registered_Users FROM map_user WHERE year='{u_yr}' AND quater='{u_qtr}' GROUP BY State ORDER BY State;"
             df_u4_a = pd.read_sql(query_u4_a, engine)
             fig = px.bar(df_u4_a , x = 'State', y ='Registered_Users', color ='Registered_Users', 
-                    color_continuous_scale = 'thermal', title = 'Top User Analysis Chart', height = 600,)
+                    color_continuous_scale = 'thermal', title = 'Top User Analysis Chart', height = 600, text='Registered_Users')
+            fig.update_traces(textposition='outside')
             st.plotly_chart(fig)
 
 
@@ -441,7 +442,8 @@ with tab2:
                 WHERE year='{u_yr}' AND quater ='{u_qtr}' AND state = '{u_state}' GROUP BY District_name ORDER BY District_name;"
             df_u4_b = pd.read_sql(query_u4_b, engine)
             fig = px.bar(df_u4_b, x = 'District_name', y ='Registered_users', color ='Registered_users', 
-                    color_continuous_scale = 'thermal', title = 'Top User Analysis Chart')
+                    color_continuous_scale = 'thermal', title = 'Top User Analysis Chart', text='Registered_users')
+            fig.update_traces(textposition='outside')
             st.plotly_chart(fig)
 
 
