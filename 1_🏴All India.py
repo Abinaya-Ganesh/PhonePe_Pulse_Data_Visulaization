@@ -454,6 +454,18 @@ with tab2:
             WHERE year='{u_yr}' AND quater ='{u_qtr}' GROUP BY state;")
     
     df_m3 = pd.read_sql(query_m2,engine)
+
+    # Clone the geo data
+    url = "https://gist.githubusercontent.com/jbrobst/56c13bbbf9d97d187fea01ca62ea5112/raw/e388c4cae20aa53cb5090210a42ebb9b765c0a36/india_states.geojson"
+    response = requests.get(url)
+    data = json.loads(response.content)
+
+    # Extract state names and sort them in alphabetical order
+    state_names = [i['properties']['ST_NM'] for i in data['features']]
+    state_names.sort()
+
+    # Create a DataFrame with the state names column
+    df_states= pd.DataFrame({'State': state_names})
     df_m4 = pd.concat([df_states,df_m3],axis=1)
     
     # Geo plot
