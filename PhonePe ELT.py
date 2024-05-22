@@ -1,7 +1,6 @@
 #=================================== /   IMPORTING LIBRARIES /   ==================================#
-#Git cloning Libraries
-import requests
-import subprocess
+#Git cloning Library
+import git
 
 #File handling Libraries
 import os
@@ -23,16 +22,9 @@ import sqlalchemy
 
 #========================================= /   GIT CLONING   / =====================================#
 
-#Specify the GitHub repository URL
-response = requests.get('https://api.github.com/repos/PhonePe/pulse')
-repo = response.json()
-clone_url = repo['clone_url']
-
-#Specify the local directory path
-clone_dir = "C:/Phonepe Pulse data"
-
-# Clone the repository to the specified local directory
-subprocess.run(["git", "clone", clone_url, clone_dir], check=True)
+repo_url="https://github.com/PhonePe/pulse.git"
+destination_directory="C:/Phonepe Pulse data"
+git.Repo.clone_from(repo_url,destination_directory)
 
 
 
