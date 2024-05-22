@@ -8,7 +8,6 @@ from sqlalchemy import create_engine
 
 #Dashboard Libraries
 import plotly.express as px
-import plotly.graph_objects as go
 import streamlit as st
 
 #========================= /   RE-ESTABLISHING CONNECTION WITH SQLALCHEMY   / ===========================#
@@ -59,9 +58,11 @@ sql_query = st.selectbox('**Questions regarding the PhonePe Pulse Data**',
 '5. What is the Trasaction count for each Transaction type?',
 '6. Which year has highest number of regiesterd  users?',
 '7. Which year marks the highest transaction count and transaction amount?',
-'8. Which 10 states have the least number of registered users?',
-'9. Which 20 districts have the least number of transaction count',
-'10. Which 20 districts have the least number of users?'), 
+'8. Which 20 states have the least number of registered users?',
+'9. Which 20 states have the least number of transaction count?',
+'10. Which 20 states have the least number of transaction amount?',
+'11. Which 20 districts have the least number of transaction count?',
+'12. Which 20 districts have the least number of users?'), 
 key = 'question', index=0)
 
 
@@ -79,7 +80,7 @@ elif sql_query == '2. What is the Total Transaction amount of all the states fro
     query_2 = "SELECT State, Year, ROUND(SUM(Transaction_amount)) AS Total_Transaction_Amount \
         FROM aggregated_transaction GROUP BY State, year;"
     df_2 = pd.read_sql(query_2,engine)
-    fig_2 = px.bar(df_2, x='State', y='Total_Transaction_Amount', color='Year', color_continuous_scale = px.colors.sequential.Viridis, 
+    fig_2 = px.bar(df_2, x='State', y='Total_Transaction_Amount', color='Year', color_continuous_scale = px.colors.sequential.Viridis,
         title='Transaction Amounts of States from 2018 to 2024 Quater 1')
     st.plotly_chart(fig_2,use_container_width=True)
 
@@ -98,7 +99,9 @@ elif sql_query == '4. What is the average Transaction value of each state?':
         FROM aggregated_transaction GROUP BY state;"
     df_4 = pd.read_sql(query_4,engine)
     fig_4 = px.bar(df_4, x='State', y='Avg_transaction_value', color='Avg_transaction_value', 
-        color_continuous_scale = 'thermal', title='Average Transaction Values of States from 2018 to 2024 Quater 1')
+        color_continuous_scale = 'thermal', title='Average Transaction Values of States from 2018 to 2024 Quater 1',
+        text='Avg_transaction_value')
+    fig_4.update_traces(textposition='outside')
     st.plotly_chart(fig_4,use_container_width=True)
 
 elif sql_query == '5. What is the Trasaction count for each Transaction type?':
@@ -106,7 +109,9 @@ elif sql_query == '5. What is the Trasaction count for each Transaction type?':
         FROM aggregated_transaction GROUP BY Transaction_type"
     df_5 = pd.read_sql(query_5,engine)
     fig_5 = px.bar(df_5, x='Transaction_type', y='Transaction_count', color='Transaction_count', 
-        color_continuous_scale = 'thermal', title='Transaction Count for every Transaction type from 2018 to 2024 Quater 1')
+        color_continuous_scale = 'thermal', title='Transaction Count for every Transaction type from 2018 to 2024 Quater 1',
+        text='Transaction_count')
+    fig_5.update_traces(textposition='outside')
     st.plotly_chart(fig_5,use_container_width=True)
    
 elif sql_query == '6. Which year has highest number of regiesterd  users?':
@@ -121,37 +126,63 @@ elif sql_query == '7. Which year marks the highest transaction count and transac
     query_7 = "SELECT year, SUM(Transaction_count) AS Transaction_count, ROUND(SUM(Transaction_amount)) AS Total_Transaction_Amount \
         FROM aggregated_transaction GROUP BY year;"
     df_7 = pd.read_sql(query_7,engine)
-    
+
     fig_7a = px.bar(df_7,x='year',y='Total_Transaction_Amount', color='Total_Transaction_Amount', text='Total_Transaction_Amount',
         color_continuous_scale = 'thermal', title='Transaction amount of all states each year')
     fig_7a.update_traces(textposition='outside')
     st.plotly_chart(fig_7a,use_container_width=True)
-    
+
     fig_7b = px.bar(df_7,x='year',y='Transaction_count', color='Transaction_count', text= 'Transaction_count',
         color_continuous_scale = 'thermal', title='Transaction count of all states each year')
     fig_7b.update_traces(textposition='outside')
     st.plotly_chart(fig_7b,use_container_width=True)
 
-elif sql_query=='8. Which 10 states have the least number of registered users?': 
+elif sql_query=='8. Which 20 states have the least number of registered users?': 
     query_8="SELECT State, SUM(User_count) AS Registered_users \
-        FROM aggregated_user GROUP BY State ORDER BY Registered_users LIMIT 10;"
+        FROM aggregated_user GROUP BY State ORDER BY State LIMIT 20;"
     df_8 = pd.read_sql(query_8,engine)
     fig_8 = px.bar(df_8,x='State',y='Registered_users', color='Registered_users', 
-        color_continuous_scale = 'thermal', title='10 States with least Registered users')
+        color_continuous_scale = 'thermal', title='20 States with least Registered users',
+        text='Registered_users')
+    fig_8.update_traces(textposition='outside')
     st.plotly_chart(fig_8,use_container_width=True)
 
-elif sql_query == '9. Which 20 districts have the least number of transaction count':
-    query_9="SELECT District_name, SUM(Transaction_count) AS Transaction_count \
-        FROM map_transaction GROUP BY District_name ORDER BY Transaction_count LIMIT 10;"
+elif sql_query == '9. Which 20 states have the least number of transaction count?':
+    query_9="SELECT State, SUM(Transaction_count) AS Transaction_count \
+        FROM map_transaction GROUP BY State ORDER BY State LIMIT 20;"
     df_9 = pd.read_sql(query_9,engine)
-    fig_9 = px.bar(df_9,x='District_name',y='Transaction_count', color='Transaction_count', 
-        color_continuous_scale = 'thermal', title='20 Districts with least Transaction count')
+    fig_9 = px.bar(df_9,x='State',y='Transaction_count', color='Transaction_count', 
+        color_continuous_scale = 'thermal', title='20 States with least Transaction count',
+        text='Transaction_count')
+    fig_9.update_traces(textposition='outside')
     st.plotly_chart(fig_9,use_container_width=True)
 
-elif '10. Which 20 districts have the least number of users?':
-    query_10="SELECT District_name, SUM(Registered_users) AS Registered_users \
-        FROM map_user GROUP BY District_name ORDER BY Registered_users LIMIT 10;"
+elif sql_query == '10. Which 20 states have the least number of transaction amount?':
+    query_10="SELECT State, SUM(Registered_users) AS Registered_users \
+        FROM map_user GROUP BY State ORDER BY State LIMIT 20;"
     df_10 = pd.read_sql(query_10,engine)
-    fig_10 = px.bar(df_10,x='District_name',y='Registered_users', color='Registered_users', 
-        color_continuous_scale = 'thermal', title='20 Districts with least Registered users')
+    fig_10 = px.bar(df_10,x='State',y='Registered_users', color='Registered_users', 
+        color_continuous_scale = 'thermal', title='20 States with least Registered users',
+        text='Registered_users')
+    fig_10.update_traces(textposition='outside')
     st.plotly_chart(fig_10,use_container_width=True)
+
+elif sql_query == '11. Which 20 districts have the least number of transaction count?':
+    query_11="SELECT District_name, SUM(Transaction_count) AS Transaction_count \
+        FROM map_transaction GROUP BY District_name ORDER BY Transaction_count LIMIT 20;"
+    df_11 = pd.read_sql(query_11,engine)
+    fig_11 = px.bar(df_11,x='District_name',y='Transaction_count', color='Transaction_count', 
+        color_continuous_scale = 'thermal', title='20 Districts with least Transaction count',
+        text='Transaction_count')
+    fig_11.update_traces(textposition='outside')
+    st.plotly_chart(fig_11,use_container_width=True)
+
+elif sql_query == '12. Which 20 districts have the least number of users?':
+    query_12="SELECT District_name, SUM(Registered_users) AS Registered_users \
+        FROM map_user GROUP BY District_name ORDER BY Registered_users LIMIT 20;"
+    df_12 = pd.read_sql(query_12,engine)
+    fig_12 = px.bar(df_12,x='District_name',y='Registered_users', color='Registered_users', 
+        color_continuous_scale = 'thermal', title='20 Districts with least Registered users',
+        text='Registered_users')
+    fig_12.update_traces(textposition='outside')
+    st.plotly_chart(fig_12,use_container_width=True)
