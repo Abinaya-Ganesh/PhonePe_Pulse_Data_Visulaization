@@ -8,6 +8,8 @@ Thus, the app collects relevant and necessary data and stores them as json files
 
 The repository is public and we can use the data to analyse and visualize.
 
+![screenshot](https://github.com/user-attachments/assets/e4cd0df2-003f-4951-877d-29995bdd7952)
+
 **User Guide**
 1. **All India Page**
      This page has two tabs Transaction and User. In the transaction tab, multiple dropdowns are give for year, qauter, state and transaction type. By selecting the required options, users can get various values, tables and charts displayed for the data selected.
